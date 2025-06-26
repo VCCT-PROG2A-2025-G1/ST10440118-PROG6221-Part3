@@ -7,6 +7,7 @@ using System.Speech.Synthesis;
 using System.Diagnostics;
 using System.Security.Policy;
 using System.Net.NetworkInformation;
+using System.Windows.Forms;
 
 namespace PROG_POE_CYBERCHATBOT
 {
@@ -111,91 +112,82 @@ namespace PROG_POE_CYBERCHATBOT
         };
         //-------------------------------------------------------------------------------------------------------------------------
         //Method to respond to the user's question
-        public void RespondToQuestion(string question)
+        public void RespondToQuestion(string question, RichTextBox output)
         {
-            //Normalize the input to lowercase and trim whitespace
-            string input = question.ToLower().Trim();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            //Random number generator to select a random response
-            Random random = new Random();
-            bool found = false;
-            //Determine if the input contains any sentiment keywords
-            string sentimentPrefix = null;
-            foreach (var sentiment in sentimentResponses)
+            string lowerQuestion = question.Trim().ToLower();
+
+            // Try exact match first
+            if (responses.TryGetValue(lowerQuestion, out var answers))
             {
-                if (input.Contains(sentiment.Key))
-                {
-                    //If a sentiment keyword is found, respond with the corresponding prefix
-                    sentimentPrefix = sentiment.Value;
-                    break;
-                }
-            }
-            //Check if user shares an interest
-            if (input.StartsWith("i'm interested in "))
-            {
-                //Extract the user's interest from the input
-                userInterest = input.Substring("i'm interested in ".Length).Trim();
-                Console.WriteLine($"Thats amazing, i'll remember that you're interested in {userInterest}");
-                Console.ResetColor();
+                foreach (var answer in answers)
+                    output.AppendText(answer + "\n");
                 return;
             }
-            //If the user has said any keywords related to sentiment, respond with the sentiment response
-            foreach (var pair in responses)
+
+            // Try keyword match
+            foreach (var key in responses.Keys)
             {
-                if (input == pair.Key.ToLower())
+                if (lowerQuestion.Contains(key.ToLower()))
                 {
-                    //If an exact match is found, select a random response from the answers
-                    string[] answers = pair.Value;
-                    string reply = answers[random.Next(answers.Length)];
-                    if (userName != null)
-                    {
-                        reply = $"{userName}, {reply}";
-                    }
-                    if (sentimentPrefix != null)
-                    {
-                        reply = $"{sentimentPrefix} {reply}";
-                    }
-                    Console.WriteLine(reply);
-                    lastTopic = pair.Key.ToLower();
-                    found = true;
-                    break;
+                    foreach (var answer in responses[key])
+                        output.AppendText(answer + "\n");
+                    return;
                 }
             }
-            //If not found, but there was a previous topic
-            if (!found && lastTopic != null && responses.ContainsKey(lastTopic))
+
+            // Sentiment response
+            foreach (var sentiment in sentimentResponses.Keys)
             {
-                Console.WriteLine("Following up on your last question...");
-                string[] answers = responses[lastTopic];
-                string reply = answers[random.Next(answers.Length)];
-                if (userName != null)
+                if (lowerQuestion.Contains(sentiment))
                 {
-                    reply = $"{userName}, {reply}";
+                    output.AppendText(sentimentResponses[sentiment] + "\n");
+                    return;
                 }
-                if (sentimentPrefix != null)
-                {
-                    reply = $"{sentimentPrefix} {reply}";
-                }
-                Console.WriteLine(reply);
-                found = true;
             }
-            //Still not found
-            if (!found)
+
+            output.AppendText("Sorry, I don't know the answer to that. Type 'help' to see what you can ask me.\n");
+            var rand = new Random();
+            if (answers.Length > 0)
             {
-                Console.WriteLine("I am sorry, I don't understand. Please type 'help' for a list of questions to ask me.");
-                lastTopic = null;
+                output.AppendText(answers[rand.Next(answers.Length)] + "\n");
             }
-            Console.ResetColor();
         }
-        //-------------------------------------------------------------------------------------------------------------------------
-        //Method to be able to list every question the user can ask
-        public void ListQuestions()
+
+        public void ListQuestions(RichTextBox output)
         {
-            foreach (var question in questionList)
+            foreach (var q in questionList)
             {
-                Console.WriteLine(question);  
+                output.AppendText(q + "\n");
             }
         }
         //-------------------------------------------------------------------------------------------------------------------------
+
+        //ACTIVITY LOG
+        private void LogActivity(string message)
+        {
+            string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            activityLog.Insert(0, $"[{timestamp}] {message}");
+            logDisplayIndex = 0; // reset to show newest logs
+            DisplayActivityLog();
+        }
+
+        private void DisplayActivityLog()
+        {
+            richTextBoxActivity.Clear();
+
+            int logsToShow = Math.Min(logPageSize, activityLog.Count - logDisplayIndex);
+            for (int i = logDisplayIndex; i < logDisplayIndex + logsToShow && i < activityLog.Count; i++)
+            {
+                richTextBoxActivity.AppendText(activityLog[i] + "\n\n");
+            }
+
+            if (logDisplayIndex + logsToShow < activityLog.Count)
+                btnShowMoreLog.Enabled = true;
+            else
+                btnShowMoreLog.Enabled = false;
+        }
+
+
     }
 }
 //------------------------------------------...ooo000 END OF FILE 000ooo...------------------------------------------------------//

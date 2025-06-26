@@ -18,15 +18,18 @@ namespace PROG_POE_CYBERCHATBOT
         public CHATBOTGUIIIII()
         {
             InitializeComponent();
-            //Attach KeyDown event handler
-            textBox1.KeyDown += textBox1_KeyDown; 
+            // Attach KeyDown event handler  
+            textBox1.KeyDown += textBox1_KeyDown;
         }
 
         private void btnGo_Click(object sender, EventArgs e)
         {
-            intro = new IntroClass(richTextBox1);
-            intro.ShowIntro();
+            intro = new IntroClass(richTextBox1, textBox1); // Pass both required arguments  
+            intro.RunIntro(); // Corrected to call the existing RunIntro method instead of the non-existent ShowIntro method
             textBox1.Focus();
+
+            btnGo.Visible = false;
+            btnAsk.Visible = true;
         }
 
         private void CHATBOTGUIIIII_Load(object sender, EventArgs e)
@@ -41,6 +44,16 @@ namespace PROG_POE_CYBERCHATBOT
                 intro.ProcessInput(textBox1.Text);
                 textBox1.Clear();
                 e.SuppressKeyPress = true;
+            }
+        }
+
+        private void btnAsk_Click(object sender, EventArgs e)
+        {
+            if (intro != null)
+            {
+                intro.ProcessInput(textBox1.Text);
+                textBox1.Clear();
+                textBox1.Focus();
             }
         }
     }

@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C:/Users/grace/source/repos/PROG_POE_CYBERCHATBOT/PROG_POE_CYBERCHATBOT/\Task.cs">
+      <Link>Task.cs</Link>
+    </Compile>
     <Compile Include="CHATBOTGUIIIII.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +71,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Questions.cs" />
+    <Compile Include="Quizz.cs" />
+    <Compile Include="Tasks.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
