@@ -7,16 +7,16 @@
       "RelativeMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|solutionrelative:prog_poe_cyberchatbot\\questions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\prog_poe_cyberchatbot\\introguipage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|solutionrelative:prog_poe_cyberchatbot\\introguipage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\prog_poe_cyberchatbot\\chatbotguiiiii.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|solutionrelative:prog_poe_cyberchatbot\\chatbotguiiiii.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\prog_poe_cyberchatbot\\introclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|solutionrelative:prog_poe_cyberchatbot\\introclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\prog_poe_cyberchatbot\\introguipage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|solutionrelative:prog_poe_cyberchatbot\\introguipage.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A76FD3A0-F45B-4FC3-968D-8B2E850CFE7E}|PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT.csproj|C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\prog_poe_cyberchatbot\\chatbotguiiiii.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,7 +42,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "IntroClass.cs",
               "DocumentMoniker": "C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT\\IntroClass.cs",
               "RelativeDocumentMoniker": "PROG_POE_CYBERCHATBOT\\IntroClass.cs",
@@ -55,7 +55,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "IntroGUIPage.cs [Design]",
               "DocumentMoniker": "C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT\\IntroGUIPage.cs",
               "RelativeDocumentMoniker": "PROG_POE_CYBERCHATBOT\\IntroGUIPage.cs",
@@ -63,11 +63,12 @@
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\IntroGUIPage.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-26T15:04:03.909Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "CHATBOTGUIIIII.cs [Design]",
               "DocumentMoniker": "C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT\\CHATBOTGUIIIII.cs",
               "RelativeDocumentMoniker": "PROG_POE_CYBERCHATBOT\\CHATBOTGUIIIII.cs",
@@ -84,7 +85,7 @@
               "RelativeDocumentMoniker": "PROG_POE_CYBERCHATBOT\\Questions.cs",
               "ToolTip": "C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT\\Questions.cs",
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\Questions.cs",
-              "ViewState": "AgIAAIkBAAAAAAAAAAAswFYBAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAI4AAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-16T08:21:56.703Z",
               "EditorCaption": ""

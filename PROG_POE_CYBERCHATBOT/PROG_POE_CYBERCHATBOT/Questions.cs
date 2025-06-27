@@ -114,7 +114,7 @@ namespace PROG_POE_CYBERCHATBOT
 
             if (lower == "stop")
             {
-                output.AppendText("Goodbye! Closing the chatbot...\n");
+                output.AppendText("Goodbye! Lovely chatting to you!\n");
                 Application.Exit();
                 return;
             }
@@ -128,6 +128,7 @@ namespace PROG_POE_CYBERCHATBOT
 
             if (lower.Contains("quiz") || lower.Contains("quizz"))
             {
+                LogActivity("User started a quiz");
                 StartQuiz();
                 return;
             }
@@ -137,10 +138,14 @@ namespace PROG_POE_CYBERCHATBOT
                 TaskManagerLogic(question); // pass original input
                 return;
             }
-
             if (lower.Contains("activity log"))
             {
                 ShowActivityLog();
+                return;
+            }
+            if (lower == "show more")
+            {
+                ShowActivityLog(true);
                 return;
             }
 
@@ -148,6 +153,7 @@ namespace PROG_POE_CYBERCHATBOT
             {
                 if (lower.Contains(key))
                 {
+                    LogActivity($"User asked about: '{key}'");
                     foreach (var r in responses[key])
                     {
                         output.AppendText(r + "\n");
@@ -239,16 +245,35 @@ namespace PROG_POE_CYBERCHATBOT
             activityLog.Insert(0, $"[{timestamp}] {message}");
         }
 
-        public void ShowActivityLog()
+        private int currentLogIndex = 0;
+
+
+        public void ShowActivityLog(bool showMore = false)
         {
+            if (showMore)
+                currentLogIndex += logPageSize;
+            else
+                currentLogIndex = 0;
+
             output.AppendText("Activity Log:\n");
-            int count = Math.Min(logPageSize, activityLog.Count);
-            for (int i = 0; i < count; i++)
+
+            int count = Math.Min(logPageSize, activityLog.Count - currentLogIndex);
+            if (count <= 0)
+            {
+                output.AppendText("No more activity log entries.\n");
+                return;
+            }
+
+            for (int i = currentLogIndex; i < currentLogIndex + count; i++)
             {
                 output.AppendText(activityLog[i] + "\n");
             }
-        }
 
+            if (currentLogIndex + count < activityLog.Count)
+            {
+                output.AppendText("\nType 'Show More' to see more log entries.\n");
+            }
+        }
         //Quizz questions
         public void StartQuiz()
         {
@@ -362,6 +387,8 @@ namespace PROG_POE_CYBERCHATBOT
 
         private List<TaskItem> tasks = new List<TaskItem>();
 
+
+
         private void TaskManagerLogic(string input)
         {
             string lower = input.ToLower();
@@ -370,7 +397,7 @@ namespace PROG_POE_CYBERCHATBOT
             {
                 if (tasks.Count == 0)
                 {
-                    output.AppendText("No tasks added yet, say 'add task <description> at <yyyy-MM-dd HH:mm>' to add tasks\n");
+                    output.AppendText("No tasks added yet, say 'add task (description) at (yyyy-MM-dd HH:mm)' to add tasks\n");
                     return;
                 }
 
@@ -395,6 +422,9 @@ namespace PROG_POE_CYBERCHATBOT
                         {
                             tasks.Add(new TaskItem { Description = desc, Due = dueDate, Completed = false });
                             output.AppendText($"Task added: {desc} (Due: {dueDate:yyyy-MM-dd HH:mm})\n");
+
+                            // 🔹 Log activity
+                            LogActivity($"Task added: '{desc}' due {dueDate:yyyy-MM-dd HH:mm}");
                         }
                         else
                         {
@@ -417,6 +447,9 @@ namespace PROG_POE_CYBERCHATBOT
                 {
                     tasks[index - 1].Completed = true;
                     output.AppendText($"Task {index} is marked as completed\n");
+
+                    // 🔹 Log activity
+                    LogActivity($"Task {index} marked as completed");
                 }
                 else
                 {
@@ -430,6 +463,9 @@ namespace PROG_POE_CYBERCHATBOT
                     var removedTask = tasks[index - 1];
                     tasks.RemoveAt(index - 1);
                     output.AppendText($"Task {index} deleted: {removedTask.Description}\n");
+
+                    // 🔹 Log activity
+                    LogActivity($"Task {index} deleted: {removedTask.Description}");
                 }
                 else
                 {
@@ -447,7 +483,7 @@ namespace PROG_POE_CYBERCHATBOT
         }
     }
 
-    public class QuizQuestion
+        public class QuizQuestion
     {
         public string QuestionText { get; set; }
         public string[] Options { get; set; }
