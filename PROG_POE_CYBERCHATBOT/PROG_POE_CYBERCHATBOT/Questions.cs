@@ -78,6 +78,19 @@ namespace PROG_POE_CYBERCHATBOT
                 "Never click suspicious links, use 2FA, and be skeptical of 'urgent' messages asking for info",
                 "Always verify unexpected messages or calls before acting — better safe than sorry",
                 "Keep your software up to date and don’t share personal details unless you're sure it's safe"
+            }},
+            //Help
+            {"Help", new[]
+            {
+                "Here are some things that you can ask me:",
+                "Password saftey",
+                "Types of scams",
+                "Overall safety",
+                "Features i can do:",
+                "Quiz me on cybersecurity (Ask for 'Quizz')",
+                "Show activity log (Ask for 'Activity Log')",
+                "Open task manager for tasks (Ask for 'Task Manager')"
+
             }}
         };
 
@@ -98,6 +111,13 @@ namespace PROG_POE_CYBERCHATBOT
         public void RespondToQuestion(string question)
         {
             string lower = question.ToLower();
+
+            if (lower == "stop")
+            {
+                output.AppendText("Goodbye! Closing the chatbot...\n");
+                Application.Exit();
+                return;
+            }
 
             if (lower.Contains("task manager"))
             {

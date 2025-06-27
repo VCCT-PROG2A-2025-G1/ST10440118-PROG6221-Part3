@@ -51,8 +51,7 @@
               "ViewState": "AgIAAEIAAAAAAAAAAAAmwFsAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-26T13:17:59.398Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -64,8 +63,7 @@
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\IntroGUIPage.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-26T15:04:03.909Z",
-              "IsPinned": true,
-              "EditorCaption": " [Design]"
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -76,8 +74,7 @@
               "ToolTip": "C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT\\CHATBOTGUIIIII.cs [Design]",
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\CHATBOTGUIIIII.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-26T15:04:06.848Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2025-06-26T15:04:06.848Z"
             },
             {
               "$type": "Document",
@@ -87,7 +84,7 @@
               "RelativeDocumentMoniker": "PROG_POE_CYBERCHATBOT\\Questions.cs",
               "ToolTip": "C:\\Users\\grace\\source\\repos\\PROG_POE_CYBERCHATBOT\\PROG_POE_CYBERCHATBOT\\Questions.cs",
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\Questions.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAGMAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAmwF8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-04-16T08:21:56.703Z",
               "EditorCaption": ""
@@ -102,8 +99,7 @@
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\CHATBOTGUIIIII.cs",
               "ViewState": "AgIAABEAAAAAAAAAAADwvw8AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-26T12:26:14.85Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-26T12:26:14.85Z"
             },
             {
               "$type": "Document",
@@ -115,8 +111,7 @@
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\CHATBOTGUIIIII.Designer.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-26T15:11:24.303Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-26T15:11:24.303Z"
             },
             {
               "$type": "Document",
@@ -128,8 +123,7 @@
               "RelativeToolTip": "PROG_POE_CYBERCHATBOT\\Program.cs",
               "ViewState": "AgIAABkAAAAAAAAAAAAAwBMAAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-04-15T19:01:26.766Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-15T19:01:26.766Z"
             }
           ]
         }
