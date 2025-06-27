@@ -20,21 +20,16 @@ namespace PROG_POE_CYBERCHATBOT
         public IntroClass(RichTextBox output, TextBox input)
         {
             _output = output;
-            _questionsHandler = new Questions();
+            _questionsHandler = new Questions(_output);  // pass the RichTextBox here!
             CurrentState = ChatState.AwaitingYesNo;
         }
 
         public void RunIntro()
         {
-            //Instantiate the Questions class
-            Questions questionsHandler = new Questions();
-
-            //ASCII art along with welcome message
-            //ASCII art created by https://www.asciiart.eu/electronics/robots#google_vignette
             _output.AppendText("-------------------------------------------------------------\n");
             _output.AppendText("CYBER SECURITY CHATBOT\n");
-            _output.AppendText("-------------------------------------------------------------");
-            // richTextBox1.AppendText();
+            _output.AppendText("-------------------------------------------------------------\n");
+
             string robotArt =
                 @"
          __
@@ -48,24 +43,19 @@ namespace PROG_POE_CYBERCHATBOT
      `---''---`    ";
 
             _output.AppendText(robotArt + Environment.NewLine);
-            _output.AppendText("");
             _output.AppendText("-------------------------------------------------------------\n");
-            //-------------------------------------------------------------------------------------------------------------------------
 
             try
             {
-                //Welcome message using custom.wav file
                 SoundPlayer player = new SoundPlayer("Resources/Welcome.wav");
                 player.PlaySync();
             }
             catch { }
-            //-------------------------------------------------------------------------------------------------------------------------
 
-            _output.AppendText("");
             _output.AppendText("Do you have any questions for me? (yes/no): ");
             CurrentState = ChatState.AwaitingYesNo;
         }
-        // Example inside IntroClass.cs
+
         public void ProcessInput(string input)
         {
             switch (CurrentState)
@@ -94,7 +84,7 @@ namespace PROG_POE_CYBERCHATBOT
                     break;
 
                 case ChatState.Chatting:
-                    _questionsHandler.RespondToQuestion(input, _output);
+                    _questionsHandler.RespondToQuestion(input);  // only pass the input string here
                     break;
             }
         }

@@ -1,27 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Speech.Synthesis;
+using System.Diagnostics;
+using System.Security.Policy;
+using System.Net.NetworkInformation;
 using System.Windows.Forms;
 
 namespace PROG_POE_CYBERCHATBOT
 {
     internal class Questions
     {
-        private RichTextBox output;
-        private List<string> activityLog = new List<string>();
-        private int logDisplayIndex = 0;
-        private const int logPageSize = 5;
-        private List<QuizQuestion> quizQuestions = new List<QuizQuestion>();
-        private int currentQuestionIndex = 0;
-        private int score = 0;
-        private bool inQuiz = false;
+        //Variable to store the last topic discussed
+        private string lastTopic = null;
+        //Variable to store the user's interest in cybersecurity
+        private string userInterest = null;
+        //Variable to store the user's name
+        private string userName = null;
 
-        public Questions(RichTextBox outputBox)
+        //Storing the questions and related answers
+
+        //Dictionary to store sentiment responses based on keywords in user input
+        //Used ChatGPT to generate the answers to the sentiment responses
+        private readonly Dictionary<string, string> sentimentResponses = new Dictionary<string, string>
         {
-            output = outputBox;
-        }
-
+            { "worried", "It's completely understandable to feel that way. Scammers can be very convincing. Let me share some tips to help you stay safe." },
+            { "frustrated", "I'm sorry you're feeling frustrated. Cybersecurity can feel overwhelming, but you're not alone. Let's go over it together." },
+            { "curious", "It's great that you're curious! Learning about cybersecurity is a smart move and I'm here to help." }
+        };
+        //Used an array of strings to store the answers for each question
         private readonly Dictionary<string, string[]> responses = new Dictionary<string, string[]>
         {
+            //Keywords spotting within the user input
             {"password", new[] {
                 "When creating a password you want it to be as safe as posible. Use techniques such as a unique word, never a pets name, and a mix of special characters and numbers",
                 "Make your password long (12+ characters), use uppercase and lowercase letters, numbers, and special characters. Avoid using personal info",
@@ -34,6 +46,8 @@ namespace PROG_POE_CYBERCHATBOT
                 "Phishing is when attackers trick you into giving away personal info via fake messages or websites",
                 "Phishing often comes as emails or texts that seem real but try to steal your passwords or credit card info",
                 "These scams usually pretend to be from banks, companies, or even friends, urging you to click fake links" }},
+            //Questions and answers for the chatbot
+            //Some questions answers have been gernerated by ChatGPT
             {"how are you?", new[] {
                 "I'm doing well! Thanks for asking.",
                 "I'm great, excited to help with any security questions you may have",
@@ -80,145 +94,100 @@ namespace PROG_POE_CYBERCHATBOT
                 "Keep your software up to date and don’t share personal details unless you're sure it's safe"
             }}
         };
-
-        private readonly Dictionary<string, string> sentimentResponses = new Dictionary<string, string>
-        {
-            { "worried", "It's completely understandable to feel that way. Scammers can be very convincing. Let me share some tips to help you stay safe." },
-            { "frustrated", "I'm sorry you're feeling frustrated. Cybersecurity can feel overwhelming, but you're not alone. Let's go over it together." },
-            { "curious", "It's great that you're curious! Learning about cybersecurity is a smart move and I'm here to help." },
-            { "confused", "No worries! Cybersecurity can be complex, but I'm here to make it easier to understand." },
-            { "scared", "It's okay to feel scared — the online world can be risky. Let's work together to stay safe." },
-            { "angry", "I understand your frustration. If something's gone wrong, let’s talk through how to prevent it next time." },
-            { "happy", "That’s great to hear! Let’s keep that good energy while learning about staying secure online." },
-            { "anxious", "Feeling anxious is normal when it comes to online safety. I'll help guide you step by step." },
-            { "unsure", "If you're unsure about anything, just ask. I'm here to make things clearer for you." },
-            { "overwhelmed", "There’s a lot to take in, but don’t worry — we’ll go through it one step at a time." }
+        //-------------------------------------------------------------------------------------------------------------------------
+        //List of all the questions the user can ask
+        private readonly string[] questionList = {
+            "Questions relating to cybersecurity:",
+            "How do i create a safe password?",
+            "What are some online scams?",
+            "What is a phishing scam?",
+            "What is a tech support scam?",
+            "What is a prize scam?",
+            "How do i avoid scams?",
+            "",
+            "Fun questions:",
+            "How are you?",
+            "What can you help with?",
+            "What type of questions can i ask?",
         };
-
-        public void RespondToQuestion(string question)
+        //-------------------------------------------------------------------------------------------------------------------------
+        //Method to respond to the user's question
+        public void RespondToQuestion(string question, RichTextBox output)
         {
-            string lower = question.ToLower();
+            string lowerQuestion = question.Trim().ToLower();
 
-            if (lower.Contains("task manager"))
+            // Try exact match first
+            if (responses.TryGetValue(lowerQuestion, out var answers))
             {
-                OpenTaskManager();
-                return;
-            }
-            if (lower.Contains("quiz") || lower.Contains("quizz"))
-            {
-                StartQuiz();
-                return;
-            }
-            if (lower.Contains("activity log"))
-            {
-                ShowActivityLog();
+                foreach (var answer in answers)
+                    output.AppendText(answer + "\n");
                 return;
             }
 
+            // Try keyword match
             foreach (var key in responses.Keys)
             {
-                if (lower.Contains(key))
+                if (lowerQuestion.Contains(key.ToLower()))
                 {
-                    foreach (var r in responses[key])
-                    {
-                        output.AppendText(r + "\n");
-                    }
+                    foreach (var answer in responses[key])
+                        output.AppendText(answer + "\n");
                     return;
                 }
             }
 
-            foreach (var key in sentimentResponses.Keys)
+            // Sentiment response
+            foreach (var sentiment in sentimentResponses.Keys)
             {
-                if (lower.Contains(key))
+                if (lowerQuestion.Contains(sentiment))
                 {
-                    output.AppendText(sentimentResponses[key] + "\n");
+                    output.AppendText(sentimentResponses[sentiment] + "\n");
                     return;
                 }
             }
 
-            output.AppendText("I don't understand that. Try asking something else or type 'help'.\n");
+            output.AppendText("Sorry, I don't know the answer to that. Type 'help' to see what you can ask me.\n");
+            var rand = new Random();
+            if (answers.Length > 0)
+            {
+                output.AppendText(answers[rand.Next(answers.Length)] + "\n");
+            }
         }
 
-        public void ListQuestions()
+        public void ListQuestions(RichTextBox output)
         {
-            output.AppendText("Here are some things you can ask:\n");
-            output.AppendText("- How do I create a safe password?\n- What are some online scams?\n- Quiz me\n- Activity log\n- Task manager\n");
+            foreach (var q in questionList)
+            {
+                output.AppendText(q + "\n");
+            }
         }
+        //-------------------------------------------------------------------------------------------------------------------------
 
-        public void LogActivity(string message)
+        //ACTIVITY LOG
+        private void LogActivity(string message)
         {
             string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             activityLog.Insert(0, $"[{timestamp}] {message}");
+            logDisplayIndex = 0; // reset to show newest logs
+            DisplayActivityLog();
         }
 
-        public void ShowActivityLog()
+        private void DisplayActivityLog()
         {
-            output.AppendText("Activity Log:\n");
-            int count = Math.Min(logPageSize, activityLog.Count);
-            for (int i = 0; i < count; i++)
+            richTextBoxActivity.Clear();
+
+            int logsToShow = Math.Min(logPageSize, activityLog.Count - logDisplayIndex);
+            for (int i = logDisplayIndex; i < logDisplayIndex + logsToShow && i < activityLog.Count; i++)
             {
-                output.AppendText(activityLog[i] + "\n");
-            }
-        }
-
-        public void StartQuiz()
-        {
-            quizQuestions.Clear();
-            currentQuestionIndex = 0;
-            score = 0;
-            inQuiz = true;
-
-            quizQuestions.Add(new QuizQuestion
-            {
-                QuestionText = "True or False: '123456' is a secure password.",
-                Options = new[] { "True", "False" },
-                CorrectOptionIndex = 1,
-                Explanation = "'123456' is one of the most commonly hacked passwords."
-            });
-
-            quizQuestions.Add(new QuizQuestion
-            {
-                QuestionText = "What does 2FA stand for?",
-                Options = new[] { "Two-Factor Authentication", "Two-Faced Attack", "Firewall Access" },
-                CorrectOptionIndex = 0,
-                Explanation = "2FA adds a second layer of security to logins."
-            });
-
-            ShowNextQuestion();
-        }
-
-        private void ShowNextQuestion()
-        {
-            if (currentQuestionIndex >= quizQuestions.Count)
-            {
-                output.AppendText($"Quiz complete! Your score: {score}/{quizQuestions.Count}\n");
-                inQuiz = false;
-                return;
+                richTextBoxActivity.AppendText(activityLog[i] + "\n\n");
             }
 
-            var q = quizQuestions[currentQuestionIndex];
-            output.AppendText($"Question {currentQuestionIndex + 1}: {q.QuestionText}\n");
-            for (int i = 0; i < q.Options.Length; i++)
-            {
-                output.AppendText($"{i + 1}. {q.Options[i]}\n");
-            }
+            if (logDisplayIndex + logsToShow < activityLog.Count)
+                btnShowMoreLog.Enabled = true;
+            else
+                btnShowMoreLog.Enabled = false;
         }
 
-        public void OpenTaskManager()
-        {
-            output.AppendText("Task Manager:\n");
-            output.AppendText("- Task 1: Check system updates\n");
-            output.AppendText("- Task 2: Review security logs\n");
-            output.AppendText("- Task 3: Change passwords regularly\n");
-        }
-    }
 
-    public class QuizQuestion
-    {
-        public string QuestionText { get; set; }
-        public string[] Options { get; set; }
-        public int CorrectOptionIndex { get; set; }
-        public string Explanation { get; set; }
     }
 }
 //------------------------------------------...ooo000 END OF FILE 000ooo...------------------------------------------------------//
