@@ -9,20 +9,21 @@ namespace PROG_POE_CYBERCHATBOT
         //List of variables
         private RichTextBox output;
         private List<string> activityLog = new List<string>();
+        private int logDisplayIndex = 0;
         private const int logPageSize = 5;
         private List<QuizQuestion> quizQuestions = new List<QuizQuestion>();
         private int currentQuestionIndex = 0;
         private int score = 0;
         private bool inQuiz = false;
         //------------------------------------------------------------------------------------------------------
-        
+
         //Constructor that initializes the output in RichTextBox
         public Questions(RichTextBox outputBox)
         {
             output = outputBox;
         }
         //------------------------------------------------------------------------------------------------------
-        
+
         //Dictionary to hold responses for different questions
         //Used GitHub Copilot to generate these responses
         private readonly Dictionary<string, string[]> responses = new Dictionary<string, string[]>
@@ -232,7 +233,7 @@ namespace PROG_POE_CYBERCHATBOT
                         if (currentQuestionIndex >= quizQuestions.Count)
                         {
                             output.AppendText($"\nQuizz is done, Your score is: {score}/{quizQuestions.Count}\n");
-                            
+
                             //If the score is 5 or more, display a congratulatory message, otherwise encourage the user to review the tips
                             if (score >= 5)
                             {
@@ -555,11 +556,12 @@ namespace PROG_POE_CYBERCHATBOT
                 output.AppendText("'delete task <number>' to remove a task\n");
             }
         }
-    }
-    //------------------------------------------------------------------------------------------------------
 
-    //Class to define a quiz question
-    public class QuizQuestion
+        //------------------------------------------------------------------------------------------------------
+
+
+        //Class to define a quiz question
+        public class QuizQuestion
         {
             public string QuestionText { get; set; }
             public string[] Options { get; set; }
@@ -567,4 +569,5 @@ namespace PROG_POE_CYBERCHATBOT
             public string Explanation { get; set; }
         }
     }
+}
 //------------------------------------------...ooo000 END OF FILE 000ooo...------------------------------------------------------//
