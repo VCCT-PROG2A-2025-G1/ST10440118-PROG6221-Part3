@@ -119,16 +119,26 @@ namespace PROG_POE_CYBERCHATBOT
                 return;
             }
 
-            if (lower.Contains("task manager"))
+            //Play the quizz
+            if (inQuiz)
             {
-                OpenTaskManager();
+                QuizzLogic(lower);
                 return;
             }
+
             if (lower.Contains("quiz") || lower.Contains("quizz"))
             {
                 StartQuiz();
                 return;
             }
+
+
+            if (lower.Contains("task manager"))
+            {
+                OpenTaskManager();
+                return;
+            }
+
             if (lower.Contains("activity log"))
             {
                 ShowActivityLog();
@@ -156,13 +166,72 @@ namespace PROG_POE_CYBERCHATBOT
                 }
             }
 
-            output.AppendText("I don't understand that. Try asking something else or type 'help'.\n");
+            output.AppendText("I don't understand that, Try asking something else or type 'help' for a list of questions to ask\n");
         }
 
-        public void ListQuestions()
+        //Quizz logic
+        private void QuizzLogic(string input)
         {
-            output.AppendText("Here are some things you can ask:\n");
-            output.AppendText("- How do I create a safe password?\n- What are some online scams?\n- Quiz me\n- Activity log\n- Task manager\n");
+            {
+                if (!inQuiz)
+                    return;
+
+                int userAnswer;
+                if (int.TryParse(input.Trim(), out userAnswer))
+                {
+                    userAnswer--; // convert to 0-based index
+
+                    var currentQuestion = quizQuestions[currentQuestionIndex];
+
+                    if (userAnswer >= 0 && userAnswer < currentQuestion.Options.Length)
+                    {
+                        if (userAnswer == currentQuestion.CorrectOptionIndex)
+                        {
+                            output.AppendText("Correct\n");
+                            score++;
+                        }
+                        else
+                        {
+                            output.AppendText("Incorrect " + currentQuestion.Explanation + "\n");
+                        }
+
+                        currentQuestionIndex++;
+
+                        if (currentQuestionIndex >= quizQuestions.Count)
+                        {
+                            output.AppendText($"\nQuizz is done, Your score is: {score}/{quizQuestions.Count}\n");
+
+                            if (score >= 3)
+                            {
+                                output.AppendText("Well done! You have a good understanding of cybersecurity\n");
+                            }
+                            else
+                            {
+                                output.AppendText("A good effort, Review the tips and try again to improve your score\n");
+                            }
+
+                            inQuiz = false;
+                        }
+                        else
+                        {
+                            var nextQuestion = quizQuestions[currentQuestionIndex];
+                            output.AppendText($"\nQuestion {currentQuestionIndex + 1}: {nextQuestion.QuestionText}\n");
+                            for (int i = 0; i < nextQuestion.Options.Length; i++)
+                            {
+                                output.AppendText($"{i + 1}. {nextQuestion.Options[i]}\n");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        output.AppendText("Please enter a valid number\n");
+                    }
+                }
+                else
+                {
+                    output.AppendText("Please enter a number corresponding to an answer\n");
+                }
+            }
         }
 
         public void LogActivity(string message)
@@ -181,6 +250,7 @@ namespace PROG_POE_CYBERCHATBOT
             }
         }
 
+        //Quizz questions
         public void StartQuiz()
         {
             quizQuestions.Clear();
@@ -188,6 +258,7 @@ namespace PROG_POE_CYBERCHATBOT
             score = 0;
             inQuiz = true;
 
+            // Question 1
             quizQuestions.Add(new QuizQuestion
             {
                 QuestionText = "True or False: '123456' is a secure password.",
@@ -196,6 +267,7 @@ namespace PROG_POE_CYBERCHATBOT
                 Explanation = "'123456' is one of the most commonly hacked passwords."
             });
 
+            // Question 2
             quizQuestions.Add(new QuizQuestion
             {
                 QuestionText = "What does 2FA stand for?",
@@ -204,23 +276,39 @@ namespace PROG_POE_CYBERCHATBOT
                 Explanation = "2FA adds a second layer of security to logins."
             });
 
-            ShowNextQuestion();
-        }
-
-        private void ShowNextQuestion()
-        {
-            if (currentQuestionIndex >= quizQuestions.Count)
+            // Question 3
+            quizQuestions.Add(new QuizQuestion
             {
-                output.AppendText($"Quiz complete! Your score: {score}/{quizQuestions.Count}\n");
-                inQuiz = false;
-                return;
-            }
+                QuestionText = "Which of these is a sign of a phishing email?",
+                Options = new[] { "It has perfect grammar and spelling", "It comes from your boss’s official email", "It urges immediate action and contains suspicious links" },
+                CorrectOptionIndex = 2,
+                Explanation = "Phishing emails often pressure you to act quickly and include suspicious links or attachments."
+            });
 
-            var q = quizQuestions[currentQuestionIndex];
-            output.AppendText($"Question {currentQuestionIndex + 1}: {q.QuestionText}\n");
-            for (int i = 0; i < q.Options.Length; i++)
+            // Question 4
+            quizQuestions.Add(new QuizQuestion
             {
-                output.AppendText($"{i + 1}. {q.Options[i]}\n");
+                QuestionText = "What should you do if you receive a suspicious link in an email?",
+                Options = new[] { "Click it quickly to see what it is", "Ignore your instincts and open it anyway", "Avoid clicking and verify the sender through another method" },
+                CorrectOptionIndex = 2,
+                Explanation = "Always verify suspicious messages via another method before clicking any links."
+            });
+
+            // Question 5
+            quizQuestions.Add(new QuizQuestion
+            {
+                QuestionText = "What is the safest way to store your passwords?",
+                Options = new[] { "Write them in a notebook near your desk", "Save them in your browser without protection", "Use a trusted password manager" },
+                CorrectOptionIndex = 2,
+                Explanation = "A password manager stores your credentials securely and encrypts them."
+            });
+
+            // Show the first question right away
+            var first = quizQuestions[0];
+            output.AppendText($"Question 1: {first.QuestionText}\n");
+            for (int i = 0; i < first.Options.Length; i++)
+            {
+                output.AppendText($"{i + 1}. {first.Options[i]}\n");
             }
         }
 
