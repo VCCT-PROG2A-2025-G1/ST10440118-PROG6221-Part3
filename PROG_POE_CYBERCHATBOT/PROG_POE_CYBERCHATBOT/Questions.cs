@@ -119,7 +119,7 @@ namespace PROG_POE_CYBERCHATBOT
                 return;
             }
 
-            //Play the quizz
+            // Quiz mode active
             if (inQuiz)
             {
                 QuizzLogic(lower);
@@ -132,10 +132,9 @@ namespace PROG_POE_CYBERCHATBOT
                 return;
             }
 
-
-            if (lower.Contains("task manager"))
+            if (lower.Contains("task"))
             {
-                OpenTaskManager();
+                TaskManagerLogic(question); // pass original input
                 return;
             }
 
@@ -302,6 +301,47 @@ namespace PROG_POE_CYBERCHATBOT
                 CorrectOptionIndex = 2,
                 Explanation = "A password manager stores your credentials securely and encrypts them."
             });
+            //6
+            quizQuestions.Add(new QuizQuestion
+            {
+                QuestionText = "Which of the following is the most secure way to connect to public Wi-Fi?",
+                Options = new[] { "Connect freely without any protection", "Use a VPN while connected", "Only browse social media" },
+                CorrectOptionIndex = 1,
+                Explanation = "A VPN encrypts your connection, making it safer when using public Wi-Fi."
+            });
+            //7
+            quizQuestions.Add(new QuizQuestion
+            {
+                QuestionText = "What is malware?",
+                Options = new[] { "A type of antivirus software", "Malicious software designed to harm or exploit systems", "A secure browser extension" },
+                CorrectOptionIndex = 1,
+                Explanation = "Malware is any software intentionally designed to cause damage to a computer or network."
+            });
+            //8
+            quizQuestions.Add(new QuizQuestion
+            {
+                QuestionText = "Why should you avoid reusing the same password for multiple accounts?",
+                Options = new[] { "It’s hard to remember", "It increases the chance of all accounts being hacked if one is compromised", "It slows down your internet" },
+                CorrectOptionIndex = 1,
+                Explanation = "If one account is breached, reused passwords can give hackers access to other accounts."
+            });
+            //9
+            quizQuestions.Add(new QuizQuestion
+            {
+                QuestionText = "What should you do if you receive a call from someone claiming to be tech support asking for remote access?",
+                Options = new[] { "Give them access if they sound professional", "Hang up and contact the company directly", "Follow their instructions carefully" },
+                CorrectOptionIndex = 1,
+                Explanation = "Scammers often pretend to be tech support to steal your information. Always verify through official channels."
+            });
+            //10
+            quizQuestions.Add(new QuizQuestion
+            {
+                QuestionText = "Which of these file extensions should you be cautious about opening in emails?",
+                Options = new[] { ".pdf", ".exe", ".jpg" },
+                CorrectOptionIndex = 1,
+                Explanation = "Executable files (.exe) can install malware on your system when opened."
+            });
+
 
             // Show the first question right away
             var first = quizQuestions[0];
@@ -312,12 +352,98 @@ namespace PROG_POE_CYBERCHATBOT
             }
         }
 
-        public void OpenTaskManager()
+        //Task manager logic
+        private class TaskItem
         {
-            output.AppendText("Task Manager:\n");
-            output.AppendText("- Task 1: Check system updates\n");
-            output.AppendText("- Task 2: Review security logs\n");
-            output.AppendText("- Task 3: Change passwords regularly\n");
+            public string Description { get; set; }
+            public DateTime Due { get; set; }
+            public bool Completed { get; set; }
+        }
+
+        private List<TaskItem> tasks = new List<TaskItem>();
+
+        private void TaskManagerLogic(string input)
+        {
+            string lower = input.ToLower();
+
+            if (lower == "task manager")
+            {
+                if (tasks.Count == 0)
+                {
+                    output.AppendText("No tasks added yet, say 'add task <description> at <yyyy-MM-dd HH:mm>' to add tasks\n");
+                    return;
+                }
+
+                output.AppendText("Task Manager:\n");
+                for (int i = 0; i < tasks.Count; i++)
+                {
+                    var t = tasks[i];
+                    string status = t.Completed ? "Completed" : "Pending";
+                    output.AppendText($"{i + 1}. {t.Description} (Due: {t.Due:yyyy-MM-dd HH:mm}) - {status}\n");
+                }
+            }
+            else if (lower.StartsWith("add task "))
+            {
+                try
+                {
+                    int atIndex = input.IndexOf(" at ", StringComparison.OrdinalIgnoreCase);
+                    if (atIndex > 8)
+                    {
+                        string desc = input.Substring(9, atIndex - 9).Trim();
+                        string dateStr = input.Substring(atIndex + 4).Trim();
+                        if (DateTime.TryParse(dateStr, out DateTime dueDate))
+                        {
+                            tasks.Add(new TaskItem { Description = desc, Due = dueDate, Completed = false });
+                            output.AppendText($"Task added: {desc} (Due: {dueDate:yyyy-MM-dd HH:mm})\n");
+                        }
+                        else
+                        {
+                            output.AppendText("Invalid date format, Please use the following: yyyy-MM-dd HH:mm\n");
+                        }
+                    }
+                    else
+                    {
+                        output.AppendText("Use, add task <description> at <yyyy-MM-dd HH:mm>\n");
+                    }
+                }
+                catch
+                {
+                    output.AppendText("There was an error adding the task, be sure the format is correct\n");
+                }
+            }
+            else if (lower.StartsWith("complete task "))
+            {
+                if (int.TryParse(input.Substring(14).Trim(), out int index) && index > 0 && index <= tasks.Count)
+                {
+                    tasks[index - 1].Completed = true;
+                    output.AppendText($"Task {index} is marked as completed\n");
+                }
+                else
+                {
+                    output.AppendText("Invalid task number\n");
+                }
+            }
+            else if (lower.StartsWith("delete task "))
+            {
+                if (int.TryParse(input.Substring(12).Trim(), out int index) && index > 0 && index <= tasks.Count)
+                {
+                    var removedTask = tasks[index - 1];
+                    tasks.RemoveAt(index - 1);
+                    output.AppendText($"Task {index} deleted: {removedTask.Description}\n");
+                }
+                else
+                {
+                    output.AppendText("Invalid task number\n");
+                }
+            }
+            else
+            {
+                output.AppendText("Task Manager commands:\n");
+                output.AppendText("'task manager' to list tasks\n");
+                output.AppendText("'add task <description> at <yyyy-MM-dd HH:mm>' to add a task\n");
+                output.AppendText("'complete task <number>' to mark a task as done\n");
+                output.AppendText("'delete task <number>' to remove a task\n");
+            }
         }
     }
 
